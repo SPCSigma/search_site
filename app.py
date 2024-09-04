@@ -74,7 +74,7 @@ def index():
             print("[LOG] - Processing POST request for sort")
             
     
-    return render_template("base.html", items=data[0], names=data[1], tags=data[2], purchases=data[3], purchase_items=data[4])
+    return render_template("base.html", items=data[0])
 
 
 # names is tags, tags is tbl tags

@@ -102,117 +102,23 @@
             <thead>
               <tr>
                 <th scope="col">ID</th>
-                <th scope="col">Item Name</th>
-                <th scope="col">Picture</th>
-                <th scope="col">Cost</th>
-                <th scope="col">Tags</th>
-                <th scope="col">Stock Amount</th>
-                <th scope="col">Edit</th>
+                <th scope="col">SKU</th>
+                <th scope="col">Name</th>
+                <th scope="col">Category</th>
+                <th scope="col">Size</th>
+                <th scope="col">Price</th>
               </tr>
             </thead>
             <tbody>
               {% for row in items %}
-              <tr>
-                <th scope="col">{{ row['id'] }}</th>
-                <th scope="col">{{ row['item_name'] }}</th>
-                <th scope="col">{{ row['item_picture'] }}</th>
-                <th scope="col">{{ row['cost'] }}</th>
-                <th scope="col">
-                  {% set tag_names = [] %}
-                    {% for t in tags %}
-                      {% if row['id'] == t['item_id'] %}
-                        {% for n in names %}
-                          {% if t['tag_id'] == n['id'] %}
-                            {% set _ = tag_names.append(n['tag_name']) %}
-                          {% endif %}
-                        {% endfor %}
-                      {% endif %}
-                    {% endfor %}
-                  {{ tag_names | join(', ') }}  
-                </th>
-                <th scope="col">{{ row['stock_amount'] }}</th>
-                <th scope="col">
-                  <!-- Edit Button -->
-                  <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#editItemModal{{row['id']}}">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                      class="bi bi-pencil-square" viewBox="0 0 16 16">
-                      <path
-                        d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                      <path fill-rule="evenodd"
-                        d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
-                    </svg>
-                  </button>
-                  <!-- Delete Button -->
-                  <form method="POST" style="display:inline">
-                    <input type="hidden" name="deleteItemID" value="{{ row['id'] }}">
-                    <input type="hidden" name="action" value="delete_item_form">
-                    <button type="submit" class="btn red-trash-icon">
-                      <svg xmlns="http://www.w3.org`/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
-                        <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
-                      </svg>
-                    </button>
-                  </form>
-                  <!-- Edit Item Modal -->
-                  <div class="modal fade" id="editItemModal{{ row['id'] }}" tabindex="-1"
-                    aria-labelledby="editItemModal{{ row['id'] }}" aria-hidden="true">
-                    <div class="modal-dialog">
-                      <form method="POST">
-                        <input type="hidden" name="editItemID" value="{{ row['id'] }}">
-                        <!-- Modal content -->
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="editItemModalLabel{{ row['id'] }}">Edit Item {{ row['id'] }}
-                            </h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                          </div>
-                          <!-- Main body of the modal -->
-                          <div class="modal-body">
-                            <!-- ITEM ID - Cannot be edited -->
-                            <div class="mb-3">
-                              <label for="editItemID{{ row['id'] }}" class="form-label">ID</label>
-                              <input type="text" class="form-control" id="editItemID{{ row['id'] }}" disabled
-                                value="{{ row['id'] }}" name="editItemID{{ row['id'] }}">
-                            </div>
-                            <!-- Item Name -->
-                            <div class="mb-3">
-                              <label for="editItemName{{ row['id'] }}" class="form-label">Item Name</label>
-                              <input type="text" class="form-control" id="editItemName{{ row['id'] }}"
-                                name="editItemName{{ row['id'] }}" value="{{ row['item_name'] }}">
-                            </div>
-                            <!-- Item Picture -->
-                            <div class="mb-3">
-                              <label for="editItemPicture{{ row['id'] }}" class="form-label">Item Picture</label>
-                              <img src="/assets/pics/placeholder.jpg" alt="Item Picture placeholder"
-                                id="editItemPicture{{ row['id'] }}" height="260vh" name="edititemPicture{{ row['id'] }}">
-                            </div>
-                            <!-- Item Cost -->
-                            <div class="mb-3">
-                              <label for="editItemCost{{ row['id'] }}" class="form-label">Cost</label>
-                              <input type="text" class="form-control" id="editItemCost{{ row['id'] }}"
-                                name="editItemCost{{ row['id'] }}" value="{{ row['cost'] }}">
-                            </div>
-                            <!-- Stock Amount -->
-                            <div class="mb-3">
-                              <label for="editItemStockAmount{{ row['id'] }}" class="form-label">Stock Amount</label>
-                              <input type="text" class="form-control" id="editItemStockAmount{{ row['id'] }}"
-                                name="editItemStockAmount{{ row['id'] }}" value="{{ row['stock_amount'] }}">
-                            </div>
-                          </div>
-                          <!-- Modal Buttons @ Bottom -->
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary" name="action" value="save_item_form">Save
-                              Changes</button>
-                          </div>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-
-                </th>
-              </tr>
+                <tr>
+                    <th scope="col">{{ row['item_id'] }}</th>
+                    <th scope="col">{{ row['sku'] }}</th>
+                    <th scope="col">{{ row['item_name'] }}</th>
+                    <th scope="col">{{ row['item_cat'] }}</th>
+                    <th scope="col">{{ row['item_size'] }}</th>
+                    <th scope="col">{{ row['item_price'] }}</th>
+                </tr>
               {% endfor %}
             </tbody>
           </table>
