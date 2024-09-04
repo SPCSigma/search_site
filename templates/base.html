@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <script src="../assets/js/color-modes.js"></script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  <meta name="generator" content="Hugo 0.122.0">
+  <title>Petit Cochon Fragrance</title>
+
+  <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/sidebars/">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+
+  <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="sidebars.css" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+    </script>
+
+  <!-- CSS Style Overrides -->
+  <style>
+    .sidebar-colour {
+      background-color: #628985;
+      /* Background colour */
+      color: #000000;
+      /* Text colour */
+    }
+
+    .main-body-colour {
+      background-color: #E7DFC6;
+    }
+
+    .custom-colour {
+      background-color: #EDE7D4 !important;
+    }
+
+    .red-trash-icon{
+      background-color: red;
+    }
+
+    .red-trash-icon svg{
+      fill: white;
+    }
+
+    .modal-text-colour{
+      font-weight: bold;
+    }
+
+    .itemCategories-space{
+      height: 17px;
+    }
+
+    .hr-sidebar{
+      border: 1px solid black;
+    }
+
+  </style>
+</head>
+
+<body>
+  <main class="d-flex">
+    <!-- Sidebar -->
+    <div class="d-flex flex-column p-3 sidebar-colour" style="width: 280px; height: 100vh;">
+      <a href="#" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="32" fill="currentColor" class="bi bi-house"
+          viewBox="0 0 16 16">
+          <path
+            d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z" />
+        </svg>
+        <span class="fs-4">James' </span>
+      </a>
+      <hr class="hr-sidebar">
+      <ul class="nav nav-pills flex-column mb-auto" id="navigation">
+        <li class="nav-item">
+          <a class="nav-link active" data-bs-toggle="tab" aria-current="page" href="#items">
+            <svg class="bi pe-none me-2" width="16" height="16">
+            </svg>
+            Home
+          </a>
+        </li>
+
+      </ul>
+      <hr>
+
+    </div>
+    <!-- Content -->
+    <div class="tab-content flex-grow-1 pt-2 main-body-colour px-4">
+      <!-- All Items Page -->
+      <div class="tab-pane fade show active" id="items">
+          <!-- <h5>Products</h5> -->
+          <table class="table table-striped-columns text-center custom-colour" style="margin-top: 0.6vw;">
+            <thead>
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Item Name</th>
+                <th scope="col">Picture</th>
+                <th scope="col">Cost</th>
+                <th scope="col">Tags</th>
+                <th scope="col">Stock Amount</th>
+                <th scope="col">Edit</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in items %}
+              <tr>
+                <th scope="col">{{ row['id'] }}</th>
+                <th scope="col">{{ row['item_name'] }}</th>
+                <th scope="col">{{ row['item_picture'] }}</th>
+                <th scope="col">{{ row['cost'] }}</th>
+                <th scope="col">
+                  {% set tag_names = [] %}
+                    {% for t in tags %}
+                      {% if row['id'] == t['item_id'] %}
+                        {% for n in names %}
+                          {% if t['tag_id'] == n['id'] %}
+                            {% set _ = tag_names.append(n['tag_name']) %}
+                          {% endif %}
+                        {% endfor %}
+                      {% endif %}
+                    {% endfor %}
+                  {{ tag_names | join(', ') }}  
+                </th>
+                <th scope="col">{{ row['stock_amount'] }}</th>
+                <th scope="col">
+                  <!-- Edit Button -->
+                  <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#editItemModal{{row['id']}}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                      class="bi bi-pencil-square" viewBox="0 0 16 16">
+                      <path
+                        d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                      <path fill-rule="evenodd"
+                        d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+                    </svg>
+                  </button>
+                  <!-- Delete Button -->
+                  <form method="POST" style="display:inline">
+                    <input type="hidden" name="deleteItemID" value="{{ row['id'] }}">
+                    <input type="hidden" name="action" value="delete_item_form">
+                    <button type="submit" class="btn red-trash-icon">
+                      <svg xmlns="http://www.w3.org`/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                        <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                      </svg>
+                    </button>
+                  </form>
+                  <!-- Edit Item Modal -->
+                  <div class="modal fade" id="editItemModal{{ row['id'] }}" tabindex="-1"
+                    aria-labelledby="editItemModal{{ row['id'] }}" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <form method="POST">
+                        <input type="hidden" name="editItemID" value="{{ row['id'] }}">
+                        <!-- Modal content -->
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="editItemModalLabel{{ row['id'] }}">Edit Item {{ row['id'] }}
+                            </h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <!-- Main body of the modal -->
+                          <div class="modal-body">
+                            <!-- ITEM ID - Cannot be edited -->
+                            <div class="mb-3">
+                              <label for="editItemID{{ row['id'] }}" class="form-label">ID</label>
+                              <input type="text" class="form-control" id="editItemID{{ row['id'] }}" disabled
+                                value="{{ row['id'] }}" name="editItemID{{ row['id'] }}">
+                            </div>
+                            <!-- Item Name -->
+                            <div class="mb-3">
+                              <label for="editItemName{{ row['id'] }}" class="form-label">Item Name</label>
+                              <input type="text" class="form-control" id="editItemName{{ row['id'] }}"
+                                name="editItemName{{ row['id'] }}" value="{{ row['item_name'] }}">
+                            </div>
+                            <!-- Item Picture -->
+                            <div class="mb-3">
+                              <label for="editItemPicture{{ row['id'] }}" class="form-label">Item Picture</label>
+                              <img src="/assets/pics/placeholder.jpg" alt="Item Picture placeholder"
+                                id="editItemPicture{{ row['id'] }}" height="260vh" name="edititemPicture{{ row['id'] }}">
+                            </div>
+                            <!-- Item Cost -->
+                            <div class="mb-3">
+                              <label for="editItemCost{{ row['id'] }}" class="form-label">Cost</label>
+                              <input type="text" class="form-control" id="editItemCost{{ row['id'] }}"
+                                name="editItemCost{{ row['id'] }}" value="{{ row['cost'] }}">
+                            </div>
+                            <!-- Stock Amount -->
+                            <div class="mb-3">
+                              <label for="editItemStockAmount{{ row['id'] }}" class="form-label">Stock Amount</label>
+                              <input type="text" class="form-control" id="editItemStockAmount{{ row['id'] }}"
+                                name="editItemStockAmount{{ row['id'] }}" value="{{ row['stock_amount'] }}">
+                            </div>
+                          </div>
+                          <!-- Modal Buttons @ Bottom -->
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" name="action" value="save_item_form">Save
+                              Changes</button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+
+                </th>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+      </div>
+
+    </div>
+
+  </main>
+
+  
+  <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="sidebars.js"></script>
+
+</body>
+</html>

@@ -59,12 +59,19 @@ def index():
     if request.method == 'POST':
         action = request.form.get("action")
         
+        # 
         if action == 'search':
             print("[LOG] -  Processing POST request for search form")
             search_data = request.form.get("searchQuerry")
             print("[LOG] - ")
             search(search_data)
             return
+        
+        if action == 'filter':
+            print("[LOG] - Processing POST request for filter")
+        
+        if action == 'sort':
+            print("[LOG] - Processing POST request for sort")
             
     
     return render_template("base.html", items=data[0], names=data[1], tags=data[2], purchases=data[3], purchase_items=data[4])
