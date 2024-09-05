@@ -30,12 +30,12 @@ def get_items_with_cat_description():
     conn = get_db_connection();
     # Grab the cursor
     cur = conn.cursor();
-    all_items = cur.execute('SELECT * FROM tbl_items').fetchall()
+    items = cur.execute('SELECT * FROM tbl_items').fetchall()
     # Close database connection
     cur.close(); 
     print ("[LOG] - Returning tables")
     # Return both datasets to the calling function
-    return all_items; 
+    return items; 
 
 def search(search_data):
     conn = get_db_connection();
@@ -74,7 +74,7 @@ def index():
             print("[LOG] - Processing POST request for sort")
             
     
-    return render_template("base.html", items=data[0])
+    return render_template("base.html", items=data)
 
 
 # names is tags, tags is tbl tags
