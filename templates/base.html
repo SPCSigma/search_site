@@ -70,6 +70,10 @@
       border: 1px solid black;
     }
 
+    .bottompagespace{
+      height: 17px;
+    }
+
   </style>
 </head>
 
@@ -103,31 +107,44 @@
     <div class="tab-content flex-grow-1 pt-2 main-body-colour px-4">
       <!-- All Items Page -->
       <div class="tab-pane fade show active" id="items">
-          <!-- <h5>Products</h5> -->
-          <table class="table table-striped-columns text-center custom-colour" style="margin-top: 0.6vw;">
-            <thead>
+
+        <div>
+          <label for="search" class="" hidden></label>
+          <form class="d-flex" role="search">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
+        </div>
+        <!-- <div class="mb-3">
+          <label for="addItemName" class="form-label">Name</label>
+          <input type="text" class="form-control" id="addItemName" name="addItemName" required pattern="[a-zA-Z ]*" required>
+        </div> -->
+
+        <table class="table table-striped-columns text-center custom-colour" style="margin-top: 0.6vw;">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">SKU</th>
+              <th scope="col">Name</th>
+              <th scope="col">Category</th>
+              <th scope="col">Size</th>
+              <th scope="col">Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in items %}
               <tr>
-                <th scope="col">ID</th>
-                <th scope="col">SKU</th>
-                <th scope="col">Name</th>
-                <th scope="col">Category</th>
-                <th scope="col">Size</th>
-                <th scope="col">Price</th>
+                  <th scope="col">{{ row['item_id'] }}</th>
+                  <th scope="col">{{ row['sku'] }}</th>
+                  <th scope="col">{{ row['item_name'] }}</th>
+                  <th scope="col">{{ row['item_cat'] }}</th>
+                  <th scope="col">{{ row['item_size'] }}</th>
+                  <th scope="col">{{ row['item_price'] }}</th>
               </tr>
-            </thead>
-            <tbody>
-              {% for row in items %}
-                <tr>
-                    <th scope="col">{{ row['item_id'] }}</th>
-                    <th scope="col">{{ row['sku'] }}</th>
-                    <th scope="col">{{ row['item_name'] }}</th>
-                    <th scope="col">{{ row['item_cat'] }}</th>
-                    <th scope="col">{{ row['item_size'] }}</th>
-                    <th scope="col">{{ row['item_price'] }}</th>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+            {% endfor %}
+          </tbody>
+        </table>
+        <div class="bottompagespace"></div>
       </div>
 
     </div>
