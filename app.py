@@ -25,15 +25,12 @@ def get_db_connection():
 
     return conn;
 
-def get_items(filter_column, filter_type):
+def get_items():
     # Make connection to the database
     conn = get_db_connection();
     # Grab the cursor
-    filter_column = filter_column
-    filter_type = filter_type
     cur = conn.cursor();
-    sql = """ SELECT * FROM tbl_items ORDER BY item_id ASC"""
-    items = cur.execute(sql)
+    items = cur.execute('SELECT * FROM tbl_items').fetchall()
     # Close database connection
     cur.close(); 
     print ("[LOG] - Returning tables")
@@ -43,43 +40,45 @@ def get_items(filter_column, filter_type):
 def search(search_data):
     conn = get_db_connection();
     print(f"Looking for deez {search_data}. Hasn't been found tho" )
-    cur = conn.cursor();
+    
     conn.execute('SELECT * FROM tbl_items WHERE item_name LIKE "%" ||?|| "%"')
     conn.commit()
     conn.close()
+
+def filter_table(column, filter_contents):
+    print(f"[LOG] - filtering table by {column} LIKE {filter_contents}")
+    conn = get_db_connection();
+    cur = conn.cursor();
+    print(f"[LOG] - running sql: SELECT * FROM tbl_items WHERE {column} LIKE '%{filter_contents}%'")
+    filtered_table = cur.execute(f"SELECT * FROM tbl_items WHERE {column} LIKE '%{filter_contents}%'").fetchall()
+    return filtered_table
 
 
 app = Flask(__name__, static_url_path='/assets', static_folder='assets')
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
-    # Default page view load all items for the user.   '
-    filter_column = request.form.get(f"filter_column", "item_id") 
-    filter_type = request.form.get(f"filter_column", "ASC") 
+    # Default page view load all items for the user.    
+    data = {};
 
-   
+    data = get_items();
+
     # Listen for data returning from the front end.
     if request.method == 'POST':
         action = request.form.get("action")
         
-        # 
-        if action == 'search':
-            print("[LOG] -  Processing POST request for search form")
-            search_data = request.form.get("searchQuerry")
-            print("[LOG] - ")
-            search(search_data)
-            return
         
-        if action == 'filter':
+        if action == 'search':
             print("[LOG] - Processing POST request for filter")
+            column = request.form.get("column")
+            filter_contents = request.form.get("contents")
+            filtered_table = filter_table(column, filter_contents)
+            return render_template("base.html", items=filtered_table)
+
         
         if action == 'sort':
             print("[LOG] - Processing POST request for sort")
             
-    data = {};
-
-    data = get_items(filter_column, filter_type);
-
     
     return render_template("base.html", items=data)
 
