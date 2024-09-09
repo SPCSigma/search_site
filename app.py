@@ -25,12 +25,15 @@ def get_db_connection():
 
     return conn;
 
-def get_items_with_cat_description():
+def get_items(filter_column, filter_type):
     # Make connection to the database
     conn = get_db_connection();
     # Grab the cursor
+    filter_column = filter_column
+    filter_type = filter_type
     cur = conn.cursor();
-    items = cur.execute('SELECT * FROM tbl_items').fetchall()
+    sql = """ SELECT * FROM tbl_items ORDER BY item_id ASC"""
+    items = cur.execute(sql)
     # Close database connection
     cur.close(); 
     print ("[LOG] - Returning tables")
@@ -40,7 +43,7 @@ def get_items_with_cat_description():
 def search(search_data):
     conn = get_db_connection();
     print(f"Looking for deez {search_data}. Hasn't been found tho" )
-    
+    cur = conn.cursor();
     conn.execute('SELECT * FROM tbl_items WHERE item_name LIKE "%" ||?|| "%"')
     conn.commit()
     conn.close()
@@ -50,11 +53,11 @@ app = Flask(__name__, static_url_path='/assets', static_folder='assets')
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
-    # Default page view load all items for the user.    
-    data = {};
+    # Default page view load all items for the user.   '
+    filter_column = request.form.get(f"filter_column", "item_id") 
+    filter_type = request.form.get(f"filter_column", "ASC") 
 
-    data = get_items_with_cat_description();
-
+   
     # Listen for data returning from the front end.
     if request.method == 'POST':
         action = request.form.get("action")
@@ -73,6 +76,10 @@ def index():
         if action == 'sort':
             print("[LOG] - Processing POST request for sort")
             
+    data = {};
+
+    data = get_items(filter_column, filter_type);
+
     
     return render_template("base.html", items=data)
 
