@@ -40,30 +40,11 @@
       background-color: #E7DFC6;
     }
 
-    .custom-colour {
-      background-color: #EDE7D4 !important;
-    }
-
-    .red-trash-icon{
-      background-color: red;
-    }
 
     .sidebar {
         position: sticky;
         top: 0;
         height: 100%;
-    }
-
-    .red-trash-icon svg{
-      fill: white;
-    }
-
-    .modal-text-colour{
-      font-weight: bold;
-    }
-
-    .itemCategories-space{
-      height: 17px;
     }
 
     .hr-sidebar{
@@ -108,29 +89,24 @@
       <!-- All Items Page -->
       <div class="tab-pane fade show active" id="items">
 
-        <div aria-hidden="true" aria-labelledby="" id="">
-          <label for="search" class="" hidden></label>
+        <!-- Search bar -->
+        <div class="mb-3">
           <form class="d-flex" role="search" method="POST">
-            <div class="dropdown">
-              <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Columns
-              </button>
-              <ul class="dropdown-menu">
-                <li><a class="form-control me-2" type="search" placeholder="column" aria-label="Search" name="column">ID</a></li>
-                <li><a class="form-control me-2" type="search" placeholder="column" aria-label="Search" name="column">SKU</a></li>
-                <li><a class="form-control me-2" type="search" placeholder="column" aria-label="Search" name="column">Name</a></li>
-                <li><a class="form-control me-2" type="search" placeholder="column" aria-label="Search" name="column">Category</a></li>
-                <li><a class="form-control me-2" type="search" placeholder="column" aria-label="Search" name="column">Size</a></li>
-                <li><a class="form-control me-2" type="search" placeholder="column" aria-label="Search" name="column">Price</a></li>
+            <div class="w-25">
+              <select class="form-select" name="column">
+                <option value="item_id" aria-label="search" name="column" type="search">ID</option>
+                <option value="sku" aria-label="search" name="column" type="search">SKU</option>
+                <option value="item_name" aria-label="search" name="column" type="search">Name</option>
+                <option value="item_cat" aria-label="search" name="column" type="search">Category</option>
+                <option value="item_size" aria-label="search" name="column" type="search">Size</option>
+                <option value="item_price" aria-label="search" name="column" type="search">Price</option>
+              </select>
             </div>
-            <input class="form-control me-2" type="search" placeholder="contains" aria-label="Search" name="contents">
-            <button class="btn btn-outline-success" type="submit" name="action" value="search">Search</button>
+            <input type="text" class="form-control" aria-label="search" name="contents">
+            <input type="hidden" name="action" value="search">
+            <button class="btn btn-secondary" type="submit" name="action" value="search">Search</button>
           </form>
         </div>
-        <!-- <div class="mb-3">
-          <label for="addItemName" class="form-label">Name</label>
-          <input type="text" class="form-control" id="addItemName" name="addItemName" required pattern="[a-zA-Z ]*" required>
-        </div> -->
 
         <table class="table table-striped-columns text-center custom-colour" style="margin-top: 0.6vw;">
           <thead>
