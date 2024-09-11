@@ -104,6 +104,27 @@
           </form>
         </div>
 
+        <!-- Sort Button -->
+         <div class="mb-3">
+          <form class="d-flex" method="POST" name="sort" role="sort">
+            <input type="hidden" name="action" value="sort">
+            <select class="form-select" name="sort_column">
+              <option value="item_id" name="sort_column" type="sort">ID</option>
+              <option value="sku" name="sort_column" type="sort">SKU</option>
+              <option value="item_name" name="sort_column" type="sort">Name</option>
+              <option value="item_cat" name="sort_column" type="sort">Category</option>
+              <option value="item_size" name="sort_column" type="sort">Size</option>
+              <option value="item_price" name="sort_column" type="sort">Price</option>
+            </select>
+            <select class="form-select" name="sort_order">
+              <option value="asc" name="sort_order" type="sort_order">Ascending</option>
+              <option value="desc" name="sort_order" type="sort_order">Descending</option>
+            </select>
+            <input type="hidden" name="action" value="sort">
+            <button class="btn btn-primary" type="submit" name="action" value="sort">Sort</button>
+          </form>
+         </div>
+
         <!-- Table Contents -->
         <table class="table table-striped-columns text-center custom-colour" style="margin-top: 0.6vw;">
           <thead>
