@@ -62,7 +62,7 @@
   <main class="d-flex">
     <!-- Sidebar -->
     <div class="d-flex flex-column p-3 sidebar sidebar-colour" style="width: 280px; height: 100vh;">
-      <a href="#" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none" href="#">
+      <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none" href="#">
         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="32" fill="currentColor" class="bi bi-house"
           viewBox="0 0 16 16">
           <path
@@ -73,16 +73,12 @@
       <hr class="hr-sidebar">
       <ul class="nav nav-pills flex-column mb-auto" id="navigation">
         <li class="nav-item">
-          <a class="nav-link active" data-bs-toggle="tab" aria-current="page" href="#items">
-            <svg class="bi pe-none me-2" width="16" height="16">
-            </svg>
+          <a class="nav-link active" aria-current="page" href="">
+            <svg class="bi pe-none me-2" width="16" height="16"></svg>
             Home
           </a>
         </li>
-
       </ul>
-      <hr>
-
     </div>
     <!-- Content -->
     <div class="tab-content flex-grow-1 pt-2 main-body-colour px-4">
@@ -91,7 +87,7 @@
 
         <!-- Search bar -->
         <div class="mb-3">
-          <form class="d-flex" role="search" method="POST">
+          <form class="d-flex" role="search" method="POST" name="search">
             <div class="w-25">
               <select class="form-select" name="column">
                 <option value="item_id" aria-label="search" name="column" type="search">ID</option>
@@ -108,6 +104,7 @@
           </form>
         </div>
 
+        <!-- Table Contents -->
         <table class="table table-striped-columns text-center custom-colour" style="margin-top: 0.6vw;">
           <thead>
             <tr>
@@ -132,6 +129,7 @@
             {% endfor %}
           </tbody>
         </table>
+
         <div class="bottompagespace"></div>
       </div>
 

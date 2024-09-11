@@ -36,5 +36,5 @@ INSERT INTO tbl_items(item_id, sku, item_name, item_cat, item_size, item_price) 
 INSERT INTO tbl_items(item_id, sku, item_name, item_cat, item_size, item_price) VALUES ('It020', 'CDR-ICT-LG', 'Iced Tea', 'Cold Drinks', 'Large', 3.55);
 INSERT INTO tbl_items(item_id, sku, item_name, item_cat, item_size, item_price) VALUES ('It021', 'CDR-LMN-MD', 'Lemonade', 'Cold Drinks', 'Medium', 3.35);
 INSERT INTO tbl_items(item_id, sku, item_name, item_cat, item_size, item_price) VALUES ('It022', 'CDR-LMN-LG', 'Lemonade', 'Cold Drinks', 'Large', 3.75);
-INSERT INTO tbl_items(item_id, sku, item_name, item_cat, item_size, item_price) VALUES ('It023', 'SNK-SHC', 'Sandwich Ham&Cheese', 'Snacks', 'N/A', 5.60);
-INSERT INTO tbl_items(item_id, sku, item_name, item_cat, item_size, item_price) VALUES ('It024', 'SNK-SSM', 'Sandwich Salami&Mozzarella', 'Snacks', 'N/A', 5.50);
+INSERT INTO tbl_items(item_id, sku, item_name, item_cat, item_size, item_price) VALUES ('It023', 'SNK-SHC', 'Sandwich Ham & Cheese', 'Snacks', 'N/A', 5.60);
+INSERT INTO tbl_items(item_id, sku, item_name, item_cat, item_size, item_price) VALUES ('It024', 'SNK-SSM', 'Sandwich Salami & Mozzarella', 'Snacks', 'N/A', 5.50);

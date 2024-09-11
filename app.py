@@ -53,6 +53,13 @@ def filter_table(column, filter_contents):
     filtered_table = cur.execute(f"SELECT * FROM tbl_items WHERE {column} LIKE '%{filter_contents}%'").fetchall()
     return filtered_table
 
+def sort_table(column, order):
+    print(f"[LOG] - Sorting table {column} in {order}")
+    conn = get_db_connection();
+    cur = conn.cursor();
+    print(f"[LOG] - Running SQL: SELECT * FROM tbl_items ORDER BY {column} {order}")
+    sorted_table = cur.execute(f"SELECT * FROM tbl_items ORDER BY {column} {order}").fetchall()
+    return sorted_table
 
 app = Flask(__name__, static_url_path='/assets', static_folder='assets')
 
@@ -78,6 +85,10 @@ def index():
         
         if action == 'sort':
             print("[LOG] - Processing POST request for sort")
+            column = request.form.get("sort_column")
+            order = request.form.get("sort_order")
+            sorted_table = sort_table(column, order)
+            return render_template("base.html", items = sorted_table)
             
     
     return render_template("base.html", items=data)
