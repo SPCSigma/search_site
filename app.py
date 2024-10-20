@@ -25,50 +25,57 @@ def get_db_connection():
 
     return conn;
 
-def get_items():
-    # Make connection to the database
-    conn = get_db_connection();
-    # Grab the cursor
-    cur = conn.cursor();
-    items = cur.execute('SELECT * FROM tbl_items').fetchall()
-    # Close database connection
-    cur.close(); 
-    print ("[LOG] - Returning tables")
-    # Return both datasets to the calling function
-    return items; 
+# Function that gets all data and combines into one execution
+def get_data(selected_columns, search_data, sort_column, sort_type):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    print("[LOG] - Getting [ALL ACTION] table data")
 
-def search(search_data):
-    conn = get_db_connection();
-    print(f"Looking for deez {search_data}. Hasn't been found tho" )
+    # Convert the list of columns into a string separated by commas
+    columns_to_select = ', '.join(selected_columns)
+
+    # Adjust item_price to ensure it is returned with two decimal points
+    if 'item_price' in selected_columns:
+        columns_to_select = columns_to_select.replace('item_price', "printf('%.2f', item_price) AS item_price")
+
+    # SQL query
+    sql = f"""
+        SELECT {columns_to_select} FROM tbl_items
+        WHERE (
+        item_id LIKE '%{search_data}%' OR 
+        sku LIKE '%{search_data}%' OR
+        item_name LIKE '%{search_data}%' OR 
+        item_cat LIKE '%{search_data}%' OR 
+        item_size LIKE '%{search_data}%' OR 
+        item_price LIKE '%{search_data}%'
+        )
+        ORDER BY {sort_column} {sort_type}
+    """
     
-    conn.execute('SELECT * FROM tbl_items WHERE item_name LIKE "%" ||?|| "%"')
+    # Log the action information
+    print(f"[LOG] - Getting Table Information [ALL ACTION] with [{selected_columns, search_data, sort_column, sort_type}]")
+
+    # Execute the sql query and fetch all results
+    items = cur.execute(sql).fetchall()
+
+    # Close the database connection
     conn.commit()
     conn.close()
-
-def filter_table(column, filter_contents):
-    print(f"[LOG] - filtering table by {column} LIKE {filter_contents}")
-    conn = get_db_connection();
-    cur = conn.cursor();
-    print(f"[LOG] - running sql: SELECT * FROM tbl_items WHERE {column} LIKE '%{filter_contents}%'")
-    filtered_table = cur.execute(f"SELECT * FROM tbl_items WHERE {column} LIKE '%{filter_contents}%'").fetchall()
-    return filtered_table
-
-def sort_table(column, order):
-    print(f"[LOG] - Sorting table {column} in {order}")
-    conn = get_db_connection();
-    cur = conn.cursor();
-    print(f"[LOG] - Running SQL: SELECT * FROM tbl_items ORDER BY {column} {order}")
-    sorted_table = cur.execute(f"SELECT * FROM tbl_items ORDER BY {column} {order}").fetchall()
-    return sorted_table
+    return items
 
 app = Flask(__name__, static_url_path='/assets', static_folder='assets')
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
-    # Default page view load all items for the user.    
+    # Default values
+    selected_columns = ['item_id', 'sku', 'item_name', 'item_cat', 'item_size', 'item_price']
+    search_data = ""
+    sort_column = "item_id"
+    sort_type = "ASC"
+    # Default page view load all items for the user.
     data = {};
-
-    data = get_items();
+    data = get_data(selected_columns, search_data, sort_column, sort_type);
+    
 
     # Listen for data returning from the front end.
     if request.method == 'POST':
@@ -76,22 +83,30 @@ def index():
         
         
         if action == 'search':
-            print("[LOG] - Processing POST request for filter")
-            column = request.form.get("column")
-            filter_contents = request.form.get("contents")
-            filtered_table = filter_table(column, filter_contents)
-            return render_template("base.html", items=filtered_table)
+            print("[LOG] - Processing POST request for search")
+            search_data = request.form.get("search_data", "")
+            selected_columns = request.form.getlist("columns")
+            sort_type = request.form.get("sort_type", "")
+            sort_column = request.form.get("sort_column", "")
+            if selected_columns:
+                items = get_data(selected_columns, search_data, sort_type, sort_column) 
+            if not selected_columns:
+                selected_columns = ['item_id', 'sku', 'item_name', 'item_cat', 'item_size', 'item_price']
+                items = get_data(selected_columns, search_data, sort_type, sort_column) 
+        
+        if action == 'filter':
+            print("[LOG] - Processing POST request for ")
 
         
-        if action == 'sort':
-            print("[LOG] - Processing POST request for sort")
-            column = request.form.get("sort_column")
-            order = request.form.get("sort_order")
-            sorted_table = sort_table(column, order)
-            return render_template("base.html", items = sorted_table)
+        # if action == 'sort':
+        #     print("[LOG] - Processing POST request for sort")
+        #     column = request.form.get("sort_column")
+        #     order = request.form.get("sort_order")
+        #     # items = sort_table(column, order)
+        #     return render_template("base.html", items=items)
             
     
-    return render_template("base.html", items=data)
+    return render_template("base.html", items=data, search_data=search_data, selected_columns=selected_columns, sort_type=sort_type, sort_column=sort_column)
 
 
 # names is tags, tags is tbl tags
