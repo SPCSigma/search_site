@@ -27,40 +27,41 @@ def get_db_connection():
 
 # Function that gets all data and combines into one execution
 def get_data(selected_columns, search_data, sort_column, sort_type):
-    conn = get_db_connection()
-    cur = conn.cursor()
-    print("[LOG] - Getting [ALL ACTION] table data")
+    conn = get_db_connection();
+    cur = conn.cursor();
+    print("[LOG] - Getting [ALL ACTION] table data");
 
     # Convert the list of columns into a string separated by commas
-    columns_to_select = ', '.join(selected_columns)
+    columns_to_select = ', '.join(selected_columns);
 
     # Adjust item_price to ensure it is returned with two decimal points
     if 'item_price' in selected_columns:
-        columns_to_select = columns_to_select.replace('item_price', "printf('%.2f', item_price) AS item_price")
+        columns_to_select = columns_to_select.replace('item_price', "printf('%.2f', item_price) AS item_price");
 
     # SQL query
     sql = f"""
-        SELECT {columns_to_select} FROM tbl_items
-        WHERE (
-        item_id LIKE '%{search_data}%' OR 
+    SELECT {columns_to_select} FROM tbl_items
+    WHERE (
+        item_id LIKE '%{search_data}%' OR
         sku LIKE '%{search_data}%' OR
-        item_name LIKE '%{search_data}%' OR 
-        item_cat LIKE '%{search_data}%' OR 
-        item_size LIKE '%{search_data}%' OR 
+        item_name LIKE '%{search_data}%' OR
+        item_cat LIKE '%{search_data}%' OR
+        item_size LIKE '%{search_data}%' OR
         item_price LIKE '%{search_data}%'
-        )
-        ORDER BY {sort_column} {sort_type}
-    """
+    )
+    ORDER BY {sort_column} {sort_type}
+    """;
+    print(sql)
     
     # Log the action information
-    print(f"[LOG] - Getting Table Information [ALL ACTION] with [{selected_columns, search_data, sort_column, sort_type}]")
+    print(f"[LOG] - Getting Table Information [ALL ACTION] with [{selected_columns, search_data, sort_column, sort_type}]");
 
     # Execute the sql query and fetch all results
-    items = cur.execute(sql).fetchall()
+    items = cur.execute(sql).fetchall();
 
     # Close the database connection
-    conn.commit()
-    conn.close()
+    conn.commit();
+    conn.close();
     return items
 
 app = Flask(__name__, static_url_path='/assets', static_folder='assets')
@@ -68,10 +69,12 @@ app = Flask(__name__, static_url_path='/assets', static_folder='assets')
 @app.route("/", methods=['GET', 'POST'])
 def index():
     # Default values
-    selected_columns = ['item_id', 'sku', 'item_name', 'item_cat', 'item_size', 'item_price']
-    search_data = ""
-    sort_column = "item_id"
-    sort_type = "ASC"
+    selected_columns = request.form.getlist('columns')
+    if not selected_columns:
+        selected_columns = ['item_id', 'sku', 'item_name', 'item_cat', 'item_size', 'item_price'] 
+    search_data = request.form.get("search_data", "")
+    sort_column = request.form.get("sort_column", "item_id")
+    sort_type = request.form.get("sort_type", "ASC")
     # Default page view load all items for the user.
     data = {};
     data = get_data(selected_columns, search_data, sort_column, sort_type);
@@ -84,16 +87,17 @@ def index():
         
         if action == 'search':
             print("[LOG] - Processing POST request for search")
+            print(f"{search_data}")
             search_data = request.form.get("search_data", "")
             selected_columns = request.form.getlist("columns")
             sort_type = request.form.get("sort_type", "")
             sort_column = request.form.get("sort_column", "")
             if selected_columns:
-                items = get_data(selected_columns, search_data, sort_type, sort_column) 
+                data = get_data(selected_columns, search_data, sort_column, sort_type)
             if not selected_columns:
                 selected_columns = ['item_id', 'sku', 'item_name', 'item_cat', 'item_size', 'item_price']
-                items = get_data(selected_columns, search_data, sort_type, sort_column) 
-        
+                data = get_data(selected_columns, search_data, sort_column, sort_type)
+    
         if action == 'filter':
             print("[LOG] - Processing POST request for ")
 

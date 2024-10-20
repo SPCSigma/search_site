@@ -87,20 +87,12 @@
 
         <!-- Search bar -->
         <div class="mb-3">
-          <form class="d-flex" role="search" method="POST" name="search_data">
-            <div class="w-25">
-              <select class="form-select" name="column">
-                <option value="item_id" aria-label="search" name="column" type="search">ID</option>
-                <option value="sku" aria-label="search" name="column" type="search">SKU</option>
-                <option value="item_name" aria-label="search" name="column" type="search">Name</option>
-                <option value="item_cat" aria-label="search" name="column" type="search">Category</option>
-                <option value="item_size" aria-label="search" name="column" type="search">Size</option>
-                <option value="item_price" aria-label="search" name="column" type="search">Price</option>
-              </select>
-            </div>
-            <input type="text" class="form-control" aria-label="search_data" name="contents">
-            <input type="hidden" name="action" value="search_data">
-            <button class="btn btn-secondary" type="submit" name="action" value="search_data">Search</button>
+          <form class="d-flex" role="search" method="POST" action="{{ url_for('index') }}">
+            <input type="text" class="form-control" aria-label="Search" name="search_data">
+            <input type="hidden" name="action" value="search">
+            <input type="hidden" name="sort_column" value="{{ sort_column }}">
+            <input type="hidden" name="sort_type" value="{{ sort_type }}">
+            <button class="btn btn-secondary" type="submit" name="action" value="search">Search</button>
           </form>
         </div>
 
