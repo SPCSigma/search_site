@@ -105,29 +105,35 @@
         <!-- Filter and Sort Button -->
         <div class="mb-3 d-flex align-items-center">
           <!-- Filter button modal -->
-          <button type="button" class="btn btn-primary filter-width me-2" data-bs-toggle="modal" data-bs-target="#filterModal">
+          <button type="button" class="btn btn-secondary filter-width me-2" data-bs-toggle="modal" data-bs-target="#filterModal">
             Filters
           </button>
           <!-- Sorting buttons -->
           <form class="d-flex flex-grow-1" method="POST" name="sort" role="sort">
             <input type="hidden" name="action" value="sort">
             <select class="form-select me-2" name="sort_column">
-              <option value="item_id" name="sort_column" type="sort">ID</option>
-              <option value="sku" name="sort_column" type="sort">SKU</option>
-              <option value="item_name" name="sort_column" type="sort">Name</option>
-              <option value="item_cat" name="sort_column" type="sort">Category</option>
-              <option value="item_size" name="sort_column" type="sort">Size</option>
-              <option value="item_price" name="sort_column" type="sort">Price</option>
+              <option value="item_id" {% if sort_column == 'item_id' %}selected{% endif %}>ID</option>
+              <option value="sku" {% if sort_column == 'sku' %}selected{% endif %}>SKU</option>
+              <option value="item_name" {% if sort_column == 'item_name' %}selected{% endif %}>Name</option>
+              <option value="item_cat" {% if sort_column == 'item_cat' %}selected{% endif %}>Category</option>
+              <option value="item_size" {% if sort_column == 'item_size' %}selected{% endif %}>Size</option>
+              <option value="item_price" {% if sort_column == 'item_price' %}selected{% endif %}>Price</option>
             </select>
             <select class="form-select me-2" name="sort_type">
-              <option value="ASC" name="sort_type" type="sort_type">Ascending</option>
-              <option value="DESC" name="sort_type" type="sort_type">Descending</option>
+              <option value="ASC" {% if sort_type == 'ASC' %}selected{% endif %}>Ascending</option>
+              <option value="DESC" {% if sort_type == 'DESC' %}selected{% endif %}>Descending</option>
             </select>
             <input type="hidden" name="action" value="sort">
             <!-- To sort the current table, use the same value search_data to keep the table -->
             <input type="hidden" name="search_data" value="{{ search_data }}">
+            {% if selected_columns %}
+              {% for column in selected_columns %}
+                <input type="hidden" name="columns" value="{{ column }}">
+              {% endfor %}
+            {% endif %}
             <button class="btn btn-primary w-25" type="submit" name="action" value="sort">Sort</button>
           </form>
+
         </div>
 
         <!-- Table Contents -->

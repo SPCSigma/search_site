@@ -109,7 +109,6 @@ def index():
                 selected_columns = ['item_id', 'sku', 'item_name', 'item_cat', 'item_size', 'item_price']
                 data = get_data(selected_columns, search_data, sort_column, sort_type)
 
-        
         if action == 'sort':
             print("[LOG] - Processing POST request for sort")
             search_data = request.form.get("search_data", "")
@@ -121,8 +120,6 @@ def index():
             if not selected_columns:
                 selected_columns = ['item_id', 'sku', 'item_name', 'item_cat', 'item_size', 'item_price']
                 data = get_data(selected_columns, search_data, sort_column, sort_type)
-
-            
     
     return render_template("base.html", items=data, search_data=search_data, selected_columns=selected_columns, sort_type=sort_type, sort_column=sort_column)
 
