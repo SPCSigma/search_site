@@ -42,19 +42,18 @@
 
 
     .sidebar {
-        position: sticky;
-        top: 0;
-        height: 100%;
+      position: sticky;
+      top: 0;
+      height: 100%;
     }
 
-    .hr-sidebar{
+    .hr-sidebar {
       border: 1px solid black;
     }
 
-    .bottompagespace{
+    .bottompagespace {
       height: 17px;
     }
-
   </style>
 </head>
 
@@ -86,9 +85,9 @@
       <div class="tab-pane fade show active" id="items">
 
         <!-- Search bar -->
-        <div class="mb-3">
-          <form class="d-flex" role="search" method="POST" action="{{ url_for('index') }}">
-            <input type="text" class="form-control" aria-label="Search" name="search_data">
+        <div class="mb-3 d-flex">
+          <form class="d-flex flex-grow-1" role="search" method="POST">
+            <input type="text" class="form-control me-2" aria-label="Search" name="search_data" placeholder="Search">
             <input type="hidden" name="action" value="search">
             <input type="hidden" name="sort_column" value="{{ sort_column }}">
             <input type="hidden" name="sort_type" value="{{ sort_type }}">
@@ -96,11 +95,16 @@
           </form>
         </div>
 
-        <!-- Sort Button -->
-         <div class="mb-3">
-          <form class="d-flex" method="POST" name="sort" role="sort">
+        <!-- Filter and Sort Button -->
+        <div class="mb-3 d-flex align-items-center">
+          <!-- Filter button modal -->
+          <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#filterModal">
+            Filters
+          </button>
+          <!-- Sorting buttons -->
+          <form class="d-flex flex-grow-1" method="POST" name="sort" role="sort">
             <input type="hidden" name="action" value="sort">
-            <select class="form-select" name="sort_column">
+            <select class="form-select me-2" name="sort_column">
               <option value="item_id" name="sort_column" type="sort">ID</option>
               <option value="sku" name="sort_column" type="sort">SKU</option>
               <option value="item_name" name="sort_column" type="sort">Name</option>
@@ -108,37 +112,39 @@
               <option value="item_size" name="sort_column" type="sort">Size</option>
               <option value="item_price" name="sort_column" type="sort">Price</option>
             </select>
-            <select class="form-select" name="sort_order">
-              <option value="asc" name="sort_order" type="sort_order">Ascending</option>
-              <option value="desc" name="sort_order" type="sort_order">Descending</option>
+            <select class="form-select me-2" name="sort_type">
+              <option value="ASC" name="sort_type" type="sort_type">Ascending</option>
+              <option value="DESC" name="sort_type" type="sort_type">Descending</option>
             </select>
             <input type="hidden" name="action" value="sort">
+            <!-- To sort the current table, use the same value search_data to keep the table -->
+            <input type="hidden" name="search_data" value="{{ search_data }}">
             <button class="btn btn-primary" type="submit" name="action" value="sort">Sort</button>
           </form>
-         </div>
+        </div>
 
         <!-- Table Contents -->
         <table class="table table-striped-columns text-center custom-colour" style="margin-top: 0.6vw;">
           <thead>
             <tr>
-              <th scope="col">ID</th>
-              <th scope="col">SKU</th>
-              <th scope="col">Name</th>
-              <th scope="col">Category</th>
-              <th scope="col">Size</th>
-              <th scope="col">Price</th>
+              {% if 'item_id' in selected_columns %}<th scope="col">ID</th>{% endif %}
+              {% if 'sku' in selected_columns %}<th scope="col">SKU</th>{% endif %}
+              {% if 'item_name' in selected_columns %}<th scope="col">Name</th>{% endif %}
+              {% if 'item_cat' in selected_columns %}<th scope="col">Category</th>{% endif %}
+              {% if 'item_size' in selected_columns %}<th scope="col">Size</th>{% endif %}
+              {% if 'item_price' in selected_columns %}<th scope="col">Price</th>{% endif %}
             </tr>
           </thead>
           <tbody>
             {% for row in items %}
-              <tr>
-                  <th scope="col">{{ row['item_id'] }}</th>
-                  <th scope="col">{{ row['sku'] }}</th>
-                  <th scope="col">{{ row['item_name'] }}</th>
-                  <th scope="col">{{ row['item_cat'] }}</th>
-                  <th scope="col">{{ row['item_size'] }}</th>
-                  <th scope="col">{{ row['item_price'] }}</th>
-              </tr>
+            <tr>
+              {% if 'item_id' in selected_columns %}<td>{{ row['item_id'] }}</td>{% endif %}
+              {% if 'sku' in selected_columns %}<td>{{ row['sku'] }}</td>{% endif %}
+              {% if 'item_name' in selected_columns %}<td>{{ row['item_name'] }}</td>{% endif %}
+              {% if 'item_cat' in selected_columns %}<td>{{ row['item_cat'] }}</td>{% endif %}
+              {% if 'item_size' in selected_columns %}<td>{{ row['item_size'] }}</td>{% endif %}
+              {% if 'item_price' in selected_columns %}<td>{{ row['item_price'] }}</td>{% endif %}
+            </tr>
             {% endfor %}
           </tbody>
         </table>
@@ -150,9 +156,67 @@
 
   </main>
 
-  
+  <!-- Filter Modal -->
+  <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="POST">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="filterModalLabel">Filter options</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" name="columns" value="item_id" id="column_item_id" {%
+                  if 'item_id' in selected_columns %}checked{% endif %}>
+                <label for="column_item_id" class="form-check-label">ID</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="columns" value="sku" id="column_sku" {% if 'sku'
+                  in selected_columns %}checked{% endif %}>
+                <label class="form-check-label" for="column_sku">SKU</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="columns" value="item_name" id="column_item_name"
+                  {% if 'item_name' in selected_columns %}checked{% endif %}>
+                <label class="form-check-label" for="column_item_name">Name</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="columns" value="item_cat" id="column_item_cat" {%
+                  if 'item_cat' in selected_columns %}checked{% endif %}>
+                <label class="form-check-label" for="column_item_cat">Category</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="columns" value="item_size" id="column_item_size"
+                  {% if 'item_size' in selected_columns %}checked{% endif %}>
+                <label class="form-check-label" for="column_item_size">Size</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="columns" value="item_price" id="column_item_price"
+                  {% if 'item_price' in selected_columns %}checked{% endif %}>
+                <label class="form-check-label" for="column_item_price">Price</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <input type="hidden" name="sort_column" id="sort_column" value="{{sort_column}}">
+            <input type="hidden" name="sort_type" id="sort_type" value="{{sort_type}}">
+            <input type="hidden" name="search_query" id="search_data" value="{{ search_data }}">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button class="btn btn-primary" type="submit" name="action" value="filterTable">Apply Filters</button>
+
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
   <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
   <script src="sidebars.js"></script>
 
 </body>
+
 </html>

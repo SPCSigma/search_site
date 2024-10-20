@@ -87,7 +87,6 @@ def index():
         
         if action == 'search':
             print("[LOG] - Processing POST request for search")
-            print(f"{search_data}")
             search_data = request.form.get("search_data", "")
             selected_columns = request.form.getlist("columns")
             sort_type = request.form.get("sort_type", "")
@@ -99,15 +98,30 @@ def index():
                 data = get_data(selected_columns, search_data, sort_column, sort_type)
     
         if action == 'filter':
-            print("[LOG] - Processing POST request for ")
+            print("[LOG] - Processing POST request for filter")
+            search_data = request.form.get("search_data", "")
+            selected_columns = request.form.getlist("columns")
+            sort_type = request.form.get("sort_type", "ASC")
+            sort_column = request.form.get("sort_column", "item_id")
+            if selected_columns:
+                data = get_data(selected_columns, search_data, sort_column, sort_type)
+            if not selected_columns:
+                selected_columns = ['item_id', 'sku', 'item_name', 'item_cat', 'item_size', 'item_price']
+                data = get_data(selected_columns, search_data, sort_column, sort_type)
 
         
-        # if action == 'sort':
-        #     print("[LOG] - Processing POST request for sort")
-        #     column = request.form.get("sort_column")
-        #     order = request.form.get("sort_order")
-        #     # items = sort_table(column, order)
-        #     return render_template("base.html", items=items)
+        if action == 'sort':
+            print("[LOG] - Processing POST request for sort")
+            search_data = request.form.get("search_data", "")
+            selected_columns = request.form.getlist("columns")
+            sort_type = request.form.get("sort_type", "")
+            sort_column = request.form.get("sort_column", "")
+            if selected_columns:
+                data = get_data(selected_columns, search_data, sort_column, sort_type)
+            if not selected_columns:
+                selected_columns = ['item_id', 'sku', 'item_name', 'item_cat', 'item_size', 'item_price']
+                data = get_data(selected_columns, search_data, sort_column, sort_type)
+
             
     
     return render_template("base.html", items=data, search_data=search_data, selected_columns=selected_columns, sort_type=sort_type, sort_column=sort_column)
